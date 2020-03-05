@@ -1,7 +1,7 @@
 import React from "react";
 import Component from "hyper/component";
 import { mem as memoryData } from "systeminformation";
-import leftPad from "left-pad";
+// import leftPad from "left-pad";
 import SvgIcon from "../utils/svg-icon";
 
 class PluginIcon extends Component {
@@ -50,7 +50,7 @@ export default class Memory extends Component {
     this.state = {
       activeMemory: 0,
       totalMemory: 0,
-      calcMemory: 0
+      percMemory: 0
     };
 
     this.getMemory = this.getMemory.bind(this);
@@ -66,34 +66,39 @@ export default class Memory extends Component {
     clearInterval(this.interval);
   }
 
-  getMemory() {
-    return memoryData().then(memory => {
-      const totalMemory = this.getGb(memory.total);
-      const activeMemory = this.getGb(memory.active);
-      const calcMemory = ((activeMemory / totalMemory) * 100).toFixed(2);
+  async getMemory() {
+    const memory = await memoryData();
+    const totalMemory = this.getBytes(memory.total);
+    const activeMemory = this.getBytes(memory.active);
+    const percMemory = this.calcMemoryPercent(activeMemory, totalMemory);
 
-      return {
-        activeMemory,
-        totalMemory,
-        calcMemory
-      };
-    });
+    return {
+      activeMemory,
+      totalMemory,
+      percMemory
+    };
   }
 
-  setMemory() {
-    return this.getMemory().then(data => this.setState(data));
+  async setMemory() {
+    const data = await this.getMemory();
+    return this.setState(data);
   }
 
-  getGb(bytes) {
-    // 1024 * 1024 * 1024 = 1073741824
+  getBytes(bytes) {
+    // 1024 * 1024 = 1048576 (MB)
+    // 1024 * 1024 * 1024 = 1073741824 (GB)
     // return (bytes / 1073741824).toFixed(2);
     return bytes.toFixed(2);
+  }
+
+  calcMemoryPercent(active, total) {
+    return ((active / total) * 100).toFixed(2);
   }
 
   render() {
     return (
       <div className="wrapper">
-        <PluginIcon /> {this.state.calcMemory}%
+        <PluginIcon /> {this.state.percMemory}%
         <style jsx>{`
           .wrapper {
             display: flex;

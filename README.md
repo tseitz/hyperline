@@ -1,5 +1,10 @@
-HyperLine
-=========
+## This Fork of HyperLine
+
+- Switches memory to percentage
+- Formats Upload and Download to make it easier to read (opinionated)
+- Updates each item every 1.5 seconds
+
+# HyperLine
 
 **HyperLine is a status line plugin for [Hyper.app](https://hyper.is/)**. It shows you useful system information such as free memory, uptime and CPU usage.
 
@@ -7,7 +12,7 @@ HyperLine
 
 ## Install
 
-* **NOTE:** HyperLine is not currently supported when using Microsoft Windows. See [this issue](https://github.com/Hyperline/hyperline/issues/57) for additional information.
+- **NOTE:** HyperLine is not currently supported when using Microsoft Windows. See [this issue](https://github.com/Hyperline/hyperline/issues/57) for additional information.
 
 To install, edit `~/.hyper.js` and add `"hyperline"` to `plugins`:
 
@@ -23,19 +28,21 @@ We implemented the same mechanism for styling/creating css classes that Hyper us
 This will allow you to create custom HyperLine themes the same way you would create a Hyper css theme.
 
 ## Configuring plugins
+
 Add the names of plugins in the order in which you would like them to be displayed to your `~/.hyper.js`:
 
-```
-config: {                                                                      
-  hyperline: {                                                                 
-    plugins: [                                                                 
-      "ip",                                                                    
-      "cpu",                                                                   
-      "spotify"                                                                
-    ]                                                                          
+```config
+config: {
+  hyperline: {
+    plugins: [
+      "ip",
+      "cpu",
+      "spotify"
+    ]
   },
 }
 ```
+
 You can see a list of all available plugins in [`src/lib/plugins/index.js`](https://github.com/Hyperline/hyperline/blob/master/src/lib/plugins/index.js)
 
 ## Contributing
