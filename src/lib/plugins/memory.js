@@ -1,15 +1,15 @@
-import React from 'react'
-import Component from 'hyper/component'
-import { mem as memoryData } from 'systeminformation'
-import leftPad from 'left-pad'
-import SvgIcon from '../utils/svg-icon'
+import React from "react";
+import Component from "hyper/component";
+import { mem as memoryData } from "systeminformation";
+import leftPad from "left-pad";
+import SvgIcon from "../utils/svg-icon";
 
 class PluginIcon extends Component {
   render() {
     return (
       <SvgIcon>
         <g fill="none" fillRule="evenodd">
-          <g className='memory-icon'>
+          <g className="memory-icon">
             <g id="memory" transform="translate(1.000000, 1.000000)">
               <path d="M3,0 L11,0 L11,14 L3,14 L3,0 Z M4,1 L10,1 L10,13 L4,13 L4,1 Z" />
               <rect x="5" y="2" width="4" height="10" />
@@ -34,65 +34,66 @@ class PluginIcon extends Component {
             fill: #fff;
           }
         `}</style>
-
       </SvgIcon>
-    )
+    );
   }
 }
 
 export default class Memory extends Component {
   static displayName() {
-    return 'memory'
+    return "memory";
   }
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       activeMemory: 0,
-      totalMemory: 0
-    }
+      totalMemory: 0,
+      calcMemory: 0
+    };
 
-    this.getMemory = this.getMemory.bind(this)
-    this.setMemory = this.setMemory.bind(this)
+    this.getMemory = this.getMemory.bind(this);
+    this.setMemory = this.setMemory.bind(this);
   }
 
   componentDidMount() {
-    this.setMemory()
-    this.interval = setInterval(() => this.setMemory(), 2500)
+    this.setMemory();
+    this.interval = setInterval(() => this.setMemory(), 1500);
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval)
+    clearInterval(this.interval);
   }
 
   getMemory() {
     return memoryData().then(memory => {
-      const totalMemory = this.getMb(memory.total)
-      const activeMemory = this.getMb(memory.active)
-      const totalWidth = totalMemory.toString().length
+      const totalMemory = this.getGb(memory.total);
+      const activeMemory = this.getGb(memory.active);
+      const calcMemory = ((activeMemory / totalMemory) * 100).toFixed(2);
 
       return {
-        activeMemory: leftPad(activeMemory, totalWidth, 0),
-        totalMemory
-      }
-    })
+        activeMemory,
+        totalMemory,
+        calcMemory
+      };
+    });
   }
 
   setMemory() {
-    return this.getMemory().then(data => this.setState(data))
+    return this.getMemory().then(data => this.setState(data));
   }
 
-  getMb(bytes) {
-    // 1024 * 1024 = 1048576
-    return (bytes / 1048576).toFixed(0)
+  getGb(bytes) {
+    // 1024 * 1024 * 1024 = 1073741824
+    // return (bytes / 1073741824).toFixed(2);
+    return bytes.toFixed(2);
   }
 
   render() {
     return (
-      <div className='wrapper'>
-        <PluginIcon /> {this.state.activeMemory}MB / {this.state.totalMemory}MB
-
+      <div className="wrapper">
+        <PluginIcon /> {this.state.calcMemory}%
         <style jsx>{`
           .wrapper {
             display: flex;
@@ -100,6 +101,6 @@ export default class Memory extends Component {
           }
         `}</style>
       </div>
-    )
+    );
   }
 }
