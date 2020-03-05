@@ -4,3 +4,4 @@ dist
 .vscode
 .DS_STORE
 .idea
+yarn-error.log
